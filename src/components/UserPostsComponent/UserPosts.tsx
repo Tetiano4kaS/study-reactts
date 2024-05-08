@@ -9,7 +9,7 @@ const UserPosts: FC<IPropsType> = ({post}) => {
     return (
         <div>
             {post.id}
-            {post.userId}
+           <h5> userId: {post.userId}</h5>
             {post.title}
             {post.body}
             {post.tags.map((tag, index) => (

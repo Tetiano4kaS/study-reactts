@@ -3,7 +3,7 @@ import './App.css';
 import {Users} from "./components/UserContainer/Users/Users";
 import {getPostByUserId} from "./services/user.api.service";
 import {IPostModel} from "./models/IPost";
-import UserPosts from "./components/UserPostsComponent/UserPosts";
+import UserPostsComponent from "./components/UserContainer/UserPostComponent/UserPostsComponent";
 
 
 const App = () => {
@@ -19,7 +19,7 @@ const showUser= (userId:number)=>{
         <div>
           <div> <Users showUser={showUser}/></div>
             <hr/>
-            {posts.map((post) =><UserPosts post={post} key={post.id}/>)}
+            { posts && <UserPostsComponent posts={posts}/>}
 
         </div>
     );
