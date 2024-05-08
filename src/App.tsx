@@ -1,26 +1,26 @@
 import React, {useState} from 'react';
 import './App.css';
 import {Users} from "./components/UserContainer/Users/Users";
-import {getUserById} from "./services/user.api.service";
-import {IUserModel} from "./models/IUser";
-import UserDetails from "./components/UserContainer/UserDetails/UserDetails";
+import {getPostByUserId} from "./services/user.api.service";
+import {IPostModel} from "./models/IPost";
+import UserPosts from "./components/UserPostsComponent/UserPosts";
 
 
 const App = () => {
 
-    const [user,setUser]=useState<IUserModel>()
+    const [posts,setPosts]=useState<IPostModel[]>([])
 
-const showUser= (id:number)=>{
-    getUserById(id).then(({data})=>{
-        console.log(data);
-        setUser(data)
+const showUser= (userId:number)=>{
+    getPostByUserId(userId).then(({data:{posts}})=>{
+        setPosts(posts)
     })
 }
     return (
         <div>
           <div> <Users showUser={showUser}/></div>
             <hr/>
-            {user && <div><UserDetails user={user}/></div>}
+            {posts.map((post) =><UserPosts post={post} key={post.id}/>)}
+
         </div>
     );
 };

@@ -1,6 +1,6 @@
 import axios, {AxiosResponse} from "axios";
 import {UsersResponseModel} from "../responseModels/UsersResponseModel";
-import {IUserModel} from "../models/IUser";
+import {UserPostsResponseModel} from "../responseModels/UserPostsResponseModel";
 
 let axiosInstance = axios.create({
     baseURL: 'https://dummyjson.com',
@@ -10,10 +10,10 @@ let axiosInstance = axios.create({
 const getAllUsers = (): Promise<AxiosResponse<UsersResponseModel>> => {
     return axiosInstance.get('/users');
 
-    };
-
-const getUserById=  (id:number): Promise<AxiosResponse<IUserModel>> =>{
-    return axiosInstance.get('/users/' + id)
 };
 
-export {axiosInstance, getAllUsers, getUserById};
+const getPostByUserId = (id: number): Promise<AxiosResponse<UserPostsResponseModel>> => {
+    return axiosInstance.get('/users/' + id + '/posts')
+};
+
+export {axiosInstance, getAllUsers, getPostByUserId};
