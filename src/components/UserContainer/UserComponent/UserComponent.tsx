@@ -12,7 +12,7 @@ const UserComponent:FC <IProps> = ({user}) => {
             {user.name}
             {user.username}
             <button onClick={()=>{
-              navigate(user.id.toString())
+              navigate(user.id.toString()+'/posts')
             }}>Show user posts</button>
         </div>
     );

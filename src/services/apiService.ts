@@ -17,6 +17,9 @@ const userService = {
 const postService = {
     getAllPosts: (): IRes<IPostModel[]> =>{
         return axiosInstance.get('/posts')
+    },
+    getCommentsByPostId: (postId:string):IRes<ICommentModel[]>=>{
+        return axiosInstance.get(`/posts/${postId}/comments`)
     }
 }
 
