@@ -9,9 +9,9 @@ const axiosInstance = axios.create({
     baseURL: 'http://owu.linkpc.net/carsAPI/v2',
     headers: {}
 });
-axiosInstance.interceptors.request.use(request=>{
-    if (localStorage.getItem('tokenPair') && (request.url !== '/auth' && request.url!=='/auth/refresh' && request.url!=='/users')) {
-        const iTokenObtainPair=retriveLocalStorageData<ITokenObtainPair>('tokenPair');
+axiosInstance.interceptors.request.use(request => {
+    if (localStorage.getItem('tokenPair') && (request.url !== '/auth' && request.url !== '/auth/refresh' && request.url !== '/users')) {
+        const iTokenObtainPair = retriveLocalStorageData<ITokenObtainPair>('tokenPair');
         request.headers.set('Authorization', 'Bearer ' + iTokenObtainPair.access)
     }
     return request;
@@ -20,46 +20,31 @@ axiosInstance.interceptors.request.use(request=>{
 
 const authService = {
     authentication: async (authData: AuthDataModel): Promise<boolean> => {
-        let response;
-        try {
-             response = await axiosInstance.post<ITokenObtainPair>('/auth', authData);
-             localStorage.setItem('tokenPair',JSON.stringify(response.data));
-        }catch (e){
-            console.log(e);
-        }
-
+        const response = await axiosInstance.post<ITokenObtainPair>('/auth', authData);
+        localStorage.setItem('tokenPair', JSON.stringify(response.data));
         return !!(response?.data?.access && response?.data?.refresh);
     },
-    refresh: async (refreshToken:string) => {
-       const response = await axiosInstance.post<ITokenObtainPair>('/auth/refresh',{refresh:refreshToken});
-       localStorage.setItem('tokenPair', JSON.stringify(response.data));  //записуємо оновлену пару токенів
+    refresh: async () => {
+        const refreshToken = retriveLocalStorageData<ITokenObtainPair>('tokenPair').refresh;
+        const response = await axiosInstance.post<ITokenObtainPair>('/auth/refresh', {refresh: refreshToken});
+        localStorage.setItem('tokenPair', JSON.stringify(response.data));  //записуємо оновлену пару токенів
     },
-    registerUser: async (formData:AuthDataModel) =>{
-       try {
-         const response = await axiosInstance.post<IUserResponse>('/users', formData);
-       return response
-       } catch (e){
-           console.error("Registration error:", e);
-           return false;
-       }
+    registerUser: async (formData: AuthDataModel) => {
+        try {
+            const response = await axiosInstance.post<IUserResponse>('/users', formData);
+            return response
+        } catch (e) {
+            console.error("Registration error:", e);
+            return false;
+        }
     }
 };
 
-const carService={
-   getCars:async () => {
-       try {
-           const response = await axiosInstance.get<ICarPaginated>('/cars');
-           return response.data
-       }catch (e){
-           const axiosError = e as AxiosError;
-           if (axiosError?.response?.status === 401){
-            const refreshToken = retriveLocalStorageData<ITokenObtainPair>('tokenPair').refresh;
-            await authService.refresh(refreshToken);
-            await carService.getCars();
-           }
-
-       }
-   }
+const carService = {
+    getCars: async (page: string = '1') => {
+        const response = await axiosInstance.get<ICarPaginated>('/cars', {params: {page: page}});
+        return response.data;
+    }
 }
 
 export {

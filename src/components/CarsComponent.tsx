@@ -1,14 +1,14 @@
 import React, {FC} from 'react';
-import {ICarPaginated} from "../models/ICarPaginated";
 import CarComponent from "./CarComponent";
+import {ICarWithAuth} from "../models/ICarWithAuth";
 
 interface IProps{
-    cars:ICarPaginated | undefined;
+    cars:ICarWithAuth[] | undefined;
 }
 const CarsComponent: FC<IProps> = ({cars}) => {
     return (
         <div>
-            {cars?.items.map(item=><CarComponent key={item.id} car={item}/>)}
+            {cars?.map(item=><CarComponent key={item.id} car={item}/>)}
         </div>
     );
 };
